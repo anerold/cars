@@ -28,14 +28,17 @@ def validate_reservation_time(start_timestamp: int, end_timestamp: int) -> None:
         start_timestamp (int): start of reservation
         end_timestamp (int): end of reservation
     """
+    now = datetime.now()
     start = datetime.fromtimestamp(start_timestamp)
     end = datetime.fromtimestamp(end_timestamp)
     errors = []
     if start >= end:
         errors.append("Start time cannot be equal or larger than End time")
+    if start < now:
+        errors.append("Start time cannot be in the past")
     if (end - start).total_seconds() / 3600 > config.RESERVATION_MAX_DURATON_HOURS:
         errors.append("Reservation time cannot be longer than 2 hours")
-    if start > datetime.now() + timedelta(hours=config.RESERVATION_MAX_IN_FUTURE_HOURS):
+    if start > now + timedelta(hours=config.RESERVATION_MAX_IN_FUTURE_HOURS):
         errors.append("Reservation Start Time cannot be more than 24 hours in the future")
     if errors:
         raise HTTPException(

@@ -22,9 +22,9 @@ class ReservationCarsSchema(BaseModel):
 class SuccessfulReservationSchema(BaseModel):
     """Schema containing info about newly created reservation"""
 
-    start = datetime
-    end = datetime
-    duration = float
-    car_uid = str
-    car_maker = str
-    car_model = str
+    start: datetime
+    end: datetime
+    duration: float
+    car_uid: str
+    car_maker: str
+    car_model: str

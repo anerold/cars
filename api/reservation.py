@@ -25,36 +25,16 @@ def make_reservation(
     reservation: ReservationSchema,
     session: Session = Depends(session_manager)
 ) -> SuccessfulReservationSchema:
-    """makes a new reservation in available timeslot
-
-    Args:
-        reservation (ReservationSchema): desired start and end time
-        session (Session, optional): db session
-
-    Raises:
-        HTTPException: invalid reservation time or no available car found
-
-    Returns:
-        SuccessfulReservation: info about the reservation
-    """
+    """Makes a new reservation in available timeslot"""
     core.validate_reservation_time(reservation.timestamp_start, reservation.timestamp_end)
     # query first available car
-    available_car = session.query(Car).outerjoin(ReservationSchema).filter(
-        or_(
-            # start and end timestamps are after the desired timeslot
-            and_(ReservationSchema.start_timestamp >= reservation.timestamp_end, ReservationSchema.end_timestamp >= reservation.timestamp_end),
-            # start and end timestamps are before the desired timeslot 
-            and_(ReservationSchema.start_timestamp <= reservation.timestamp_start, ReservationSchema.end_timestamp <= reservation.timestamp_start),
-            # car has no reservations at all
-            ReservationSchema.id.is_(None)
-        )
-    ).first()
+    available_car = session.query(Car).filter() # TODO
     if not available_car:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="No Car found for this timeslot"
         )
-    reservation_obj = ReservationSchema(
+    reservation_obj = Reservation(
         start_timestamp=reservation.timestamp_start,
         end_timestamp=reservation.timestamp_end
     )
@@ -87,7 +67,7 @@ def get_all_reservations(session: Session = Depends(session_manager)) -> List[Re
     """
     current_timestamp = int(datetime.now().timestamp())
     # query all upcoming reservations
-    upcoming_reservations = session.query(ReservationSchema).filter(ReservationSchema.start_timestamp >= current_timestamp).all()
+    upcoming_reservations = session.query(Reservation).filter(Reservation.start_timestamp >= current_timestamp).all()
     result = []
     for reservation in upcoming_reservations:
         car: Car = reservation.car
