@@ -28,7 +28,7 @@ def make_reservation(
     """Makes a new reservation in available timeslot"""
     core.validate_reservation_time(reservation.timestamp_start, reservation.timestamp_end)
     # query first available car
-    available_car = session.query(Car).filter() # TODO
+    available_car = ().first() # TODO
     if not available_car:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
