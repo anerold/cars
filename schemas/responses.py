@@ -1,5 +1,5 @@
 from pydantic import BaseModel
 
-class BasicResponse(BaseModel):
+class BasicResponseSchema(BaseModel):
     """Basic response to request"""
     detail: str

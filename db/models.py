@@ -4,9 +4,8 @@ Car to Reservation has one-to-many relationship (one car can have multiple reser
 """
 
 
-from sqlalchemy import Column, ForeignKey, Integer, String, event
-from sqlalchemy.engine import Connection
-from sqlalchemy.orm import DeclarativeMeta, relationship
+from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
 
 from .base import Base
 
