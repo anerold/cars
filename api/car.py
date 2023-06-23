@@ -27,7 +27,7 @@ def add_car(
     """Adds a new car to DB"""
     core.raise_for_already_exists(car_info.uid, session)
     core.validate_car_uid(car_info.uid)
-    session.add(CarSchema(uid=car_info.uid, maker=car_info.maker, model=car_info.model))
+    session.add(Car(uid=car_info.uid, maker=car_info.maker, model=car_info.model))
     return BasicResponseSchema(detail="New car created")
 
 
@@ -46,7 +46,7 @@ def update_car(
 ) -> BasicResponseSchema:
     """Updates a car"""
     core.raise_for_already_exists(car_info.new_uid, session)
-    car_to_be_updated = session.query(CarSchema).filter_by(uid=car_info.uid).first()
+    car_to_be_updated = session.query(Car).filter_by(uid=car_info.uid).first()
     core.raise_for_not_exists(car_to_be_updated, car_info.uid)
     if car_info.new_uid:
         core.validate_car_uid(car_info.new_uid)
@@ -70,7 +70,7 @@ def remove_car(
 ) -> BasicResponseSchema:
     """Removes a car"""
     # TODO delete its reservations (and maybe move them to a new car)
-    car_to_be_deleted = session.query(CarSchema).filter_by(uid=car_info.uid).first()
+    car_to_be_deleted = session.query(Car).filter_by(uid=car_info.uid).first()
     core.raise_for_not_exists(car_to_be_deleted, car_info.uid)
     session.delete(car_to_be_deleted)
     return BasicResponseSchema(detail="Car deleted successfully")
@@ -85,7 +85,7 @@ def remove_car(
 )
 def get_all_cars(session: Session = Depends(session_manager)) -> List[CarSchema]:
     """Returns list of all cars"""
-    cars = session.query(CarSchema).all()
+    cars = session.query(Car).all()
     result = []
     for car in cars:
         result.append(CarSchema(uid=car.uid, maker=car.maker, model=car.model))

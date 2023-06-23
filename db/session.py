@@ -4,14 +4,14 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from .base import Base
+import config
 
-DB_FILE = "cars.db" # TODO do configu
 
-db_engine = create_engine(f"sqlite+pysqlite:///{DB_FILE}", echo=False)
+db_engine = create_engine(f"{config.DB_DRIVER}:///{config.DB_URL}", echo=False)
 global_session = sessionmaker(bind=db_engine)
 
 
-if not os.path.isfile(DB_FILE):
+if config.DB_DRIVER == "sqlite+pysqlite" and not os.path.isfile(config.DB_URL):
     Base.metadata.create_all(db_engine)
 
 
