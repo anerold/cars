@@ -3,9 +3,9 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from .base import Base
 import config
 
+from .base import Base
 
 db_engine = create_engine(f"{config.DB_DRIVER}:///{config.DB_URL}", echo=False)
 global_session = sessionmaker(bind=db_engine)
@@ -26,7 +26,3 @@ def session_manager():
         raise exception
     finally:
         session.close()
-
-
-
-

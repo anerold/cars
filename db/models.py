@@ -2,8 +2,6 @@
 Definitions of DB tables.
 Car to Reservation has one-to-many relationship (one car can have multiple reservations)
 """
-
-
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 

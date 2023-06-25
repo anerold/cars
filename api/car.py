@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 import core
 from db import Car, session_manager
-from schemas import BasicResponseSchema, CarSchema, CarDeleteSchema, CarUpdateSchema
+from schemas import BasicResponseSchema, CarDeleteSchema, CarSchema, CarUpdateSchema
 
 router = APIRouter(prefix="/car")
 

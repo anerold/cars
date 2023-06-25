@@ -1,9 +1,11 @@
-from fastapi import HTTPException, status
 from datetime import datetime, timedelta
+
+from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
 import config
 from db import Car
+
 
 def validate_car_uid(car_uid: str) -> None:
     """Validates if provided string is valid car_uid
@@ -19,6 +21,7 @@ def validate_car_uid(car_uid: str) -> None:
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"{car_uid} is not a valid uid. Please use C<number up to 9 digits> format",
         )
+
 
 def validate_reservation_time(start_timestamp: int, end_timestamp: int) -> None:
     """Validates if reservation time is max config.RESERVATION_MAX_DURATON_HOURS hours
@@ -41,11 +44,8 @@ def validate_reservation_time(start_timestamp: int, end_timestamp: int) -> None:
     if start > now + timedelta(hours=config.RESERVATION_MAX_IN_FUTURE_HOURS):
         errors.append("Reservation Start Time cannot be more than 24 hours in the future")
     if errors:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="\n".join(errors)
-        )
-        
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="\n".join(errors))
+
 
 def raise_for_already_exists(car_uid: str, session: Session) -> None:
     """raises HTTPException with status 409 is record with car_uid exists in the cars table
