@@ -52,4 +52,5 @@ def make_reservation(
 )
 def get_all_reservations(session: Session = Depends(session_manager)) -> List[ReservationCarsSchema]:
     """Gets all upcomming reservations"""
+    print(core.get_all_upcoming_reservations(session))
     return core.get_all_upcoming_reservations(session)

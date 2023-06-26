@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
@@ -31,9 +31,9 @@ def validate_reservation_time(start_timestamp: int, end_timestamp: int) -> None:
         start_timestamp (int): start of reservation
         end_timestamp (int): end of reservation
     """
-    now = datetime.now()
-    start = datetime.fromtimestamp(start_timestamp)
-    end = datetime.fromtimestamp(end_timestamp)
+    now = datetime.now(timezone.utc)
+    start = datetime.fromtimestamp(start_timestamp, timezone.utc)
+    end = datetime.fromtimestamp(end_timestamp, timezone.utc)
     errors = []
     if start >= end:
         errors.append("Start time cannot be equal or larger than End time")

@@ -15,9 +15,9 @@ class ReservationCarsSchema(BaseModel):
 
     timestamp_start: int
     timestamp_end: int
-    car_uid = str
-    car_maker = str
-    car_model = str
+    car_uid: str
+    car_maker: str
+    car_model: str
 
 
 class SuccessfulReservationSchema(BaseModel):
