@@ -69,7 +69,6 @@ def remove_car(
     session: Session = Depends(session_manager),
 ) -> BasicResponseSchema:
     """Removes a car"""
-    # TODO delete its reservations (and maybe move them to a new car)
     car_to_be_deleted = session.query(Car).filter_by(uid=car_info.uid).first()
     core.raise_for_not_exists(car_to_be_deleted, car_info.uid)
     session.delete(car_to_be_deleted)
