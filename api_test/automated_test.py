@@ -69,14 +69,16 @@ def find_car_in_all_cars(sample_car: dict) -> None:
 
 
 if __name__ == "__main__":
-    sample_car = {"maker": "company", "model": "car_model", "uid": "C1234623"}
+    sample_car = {"maker": "company", "model": "car_model", "uid": "C112"}
     tester = TestAPI("http://localhost", 8000)
     # first create a car
     assert tester.add_car(sample_car) == 201, "Car creation failed"
     # get all cars and find our car in them
     find_car_in_all_cars(sample_car)
+    # verify we can't create same car again
+    assert tester.add_car(sample_car) == 409, "Added same car twice"
     # update our car
-    new_uid = "C146632"
+    new_uid = "C123456"
     new_maker = "another_company"
     new_model = "another_model"
     assert (
@@ -85,6 +87,13 @@ if __name__ == "__main__":
         )
         == 200
     ), "Car update failed"
+    # verify we can't update car to an uid that already exists
+    assert (
+        tester.update_car(
+            {"uid": new_uid, "new_uid": new_uid, "new_maker": new_maker, "new_model": new_model}
+        )
+        == 409
+    ), "Updated car to an existing uid"
     sample_car["uid"] = new_uid
     sample_car["maker"] = new_maker
     sample_car["model"] = new_model
@@ -113,8 +122,18 @@ if __name__ == "__main__":
             break
     else:
         raise AssertionError("Newly created reservation is not present in list of all reservations")
+    ## check reservation validations
+    # start in past
+    status, response = tester.make_reservation({"timestamp_start": 0, "timestamp_end": 100})
+    assert status == 400, "Reserved car in the past"
+    # start in future more tha 24 hours
+    status, response = tester.make_reservation({"timestamp_start": now + 25*60*60, "timestamp_end": now + offset + 25*60*60})
+    assert status == 400, "Reserved car too far in the future"
+    # end later than start
+    status, response = tester.make_reservation({"timestamp_start": now + offset, "timestamp_end": now})
+    assert status == 400, "Reservation end sooner than start"
 
-    # lastly delete the test car (in order to cleanup and also in order to test delete function)
+    ## lastly delete the test car (in order to cleanup and also in order to test delete function)
     assert tester.remove_car({"uid": sample_car["uid"]}) == 200, "Car deletion failed"
     try:
         # check our car disappeared from all cars
